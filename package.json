@@ -1,0 +1,20 @@
+{
+  "name": "nga-api",
+  "version": "1.0.0",
+  "description": "an api for nga search gallert",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jonathan/Jesus",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.14.1",
+    "jquery": "^3.1.1",
+    "lodash": "^4.17.4",
+    "mongoose": "^4.8.1",
+    "morgan": "^1.8.0",
+    "nightmare": "^2.9.1",
+    "x-ray": "^2.3.1"
+  }
+}
