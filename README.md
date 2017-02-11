@@ -1,9 +1,36 @@
 # nga-api
 
+To get started with developing this repo first
+
 ```bash
 git https://github.com/Hitscotty/nga-api.git && cd nga-api
 npm install
-node app.js
+```
+
+create a `config.js` file with your info, be sure to have a db uri to plug in. Copy and paste the following.
+
+``` javascript
+const config = {
+  PORT: 3000,
+  NGA: {
+    root: "https://images.nga.gov/en/search/show_advanced_search_page/?service=search&action=do_advanced_search&language=en&form_name=&all_words=&exact_phrase=&exclude_words=&artist_last_name=&keywords_in_title=&accession_number=&school=&Classification=&medium=&year=&year2=",
+    onview: "http://www.nga.gov/content/ngaweb/collection-search-result.html?onview=On_View&pageNumber=1",
+    online: "http://www.nga.gov/content/ngaweb/collection-search-result.html?artobj_imagesonly=Images_online&pageNumber=1&lastFacet=artobj_imagesonly"
+    // add more endpoints here
+  },
+  NIGHTMARE: {
+    waitTimeout: 800000,
+    openDevTools: {
+      mode: 'detach'
+    },
+    show: false
+  },
+  DB: {
+    uri: "YOUR_DB_URI_HERE"
+  }
+}
+
+module.exports = config;
 ```
 
 for CLI use you can check supported commands with `node app.js --h`
