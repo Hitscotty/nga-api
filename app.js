@@ -30,7 +30,7 @@ app.get('/onview', (req, res) => {
   })
 })
 
-app.listen(config.PORT, () => console.log("\nrunning on port " + config.PORT + "...\n"));
+app.listen(config.PORT, () => console.log("\nrunning on port " + config.PORT + " ...\n"));
 
 // --------------------------- Utility Functions ------------------ //
 
@@ -39,25 +39,26 @@ function Paginate(url, pgd) {
   this.url = url;
   this.array = pgd.split(" ");
 
-  this.total = Number(_.join(_.filter(this.array[4], char => char != ","), ''));
-  this.current = Number(this.array[0]);
-  this.pages = Number(this.array[2]);
+  this.currentPage = Number(this.array[0]);
+  this.totalItems = Number(_.join(_.filter(this.array[4], char => char != ","), ''));
+  this.itemsPerPage = Number(this.array[2]);
+  this.totalPages = Math.floor(this.totalItems / this.itemsPerPage)
   this.next = true;
 
   this.update = () => {
-    this.current += this.pages;
-    if (this.current >= this.total)
+    this.currentPage += 1;
+    if (this.currentPage >= this.totalPages)
       this.next = false;
     }
 
   this.state = () => {
     console.log("-------- Pagination ----------")
-    console.log("current page: " + this.current);
-    console.log("total pages: " + this.total);
-    console.log("items per page: " + this.pages);
+    console.log("current page: " + this.currentPage);
+    console.log("total pages: " + this.totalPages);
+    console.log("total items: " + this.totalItems);
+    console.log("items per page: " + this.itemsPerPage);
     console.log("has next page: " + this.next);
-    console.log("------------------------------\n")
-
+    console.log("------------------------------\n");
   }
 
 }
