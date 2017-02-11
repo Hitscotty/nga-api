@@ -10,7 +10,7 @@ for CLI use you can check supported commands with `node app.js --h`
 
 # endpoints
 
-You can access all the same search categories from the [nga website][nga]. Heres a sample image object:
+You can access all the same search categories from the [nga website](http://www.nga.gov/content/ngaweb.html). Heres a sample image object:
 
 ```json
 {
@@ -24,4 +24,4 @@ You can access all the same search categories from the [nga website][nga]. Heres
   }
 ```
 
-[nga][<http://www.nga.gov/content/ngaweb.html>]
+
