@@ -4,8 +4,7 @@ const _ = require('lodash');
 let errDoc = (err, doc) => {
   if (err)
     throw err;
-  console.log(doc);
-}
+  }
 
 let artSchema = mongoose.Schema({
   img: {

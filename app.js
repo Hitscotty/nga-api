@@ -1,13 +1,18 @@
 const express = require('express');
 const logger = require('morgan');
 const mongoose = require('mongoose');
+const async = require('async');
 const _ = require('lodash');
 const xr = require('x-ray')();
 const $ = require('jquery');
 const fs = require('fs');
 
 const config = require('./config.js');
-const nightmare = require('nightmare')(config.NIGHTMARE);
+const realMouse = require('nightmare-real-mouse');
+const Nightmare = require('nightmare');
+require('nightmare-real-mouse')(Nightmare);
+nightmare = Nightmare(config.NIGHTMARE);
+
 const URL = config.NGA.root;
 const URI = config.DB.uri;
 
@@ -46,10 +51,14 @@ function Paginate(url, pgd) {
   this.next = true;
 
   this.update = () => {
+    let chunks = url.split("&").filter(segment => !segment.includes('Number='));
+
     this.currentPage += 1;
     if (this.currentPage >= this.totalPages)
       this.next = false;
-    }
+
+    this.url = _.join(chunks, "") + '&pageNumber=' + this.currentPage;
+  }
 
   this.state = () => {
     console.log("-------- Pagination ----------")
@@ -58,6 +67,7 @@ function Paginate(url, pgd) {
     console.log("total items: " + this.totalItems);
     console.log("items per page: " + this.itemsPerPage);
     console.log("has next page: " + this.next);
+    console.log("current url: " + this.url);
     console.log("------------------------------\n");
   }
 
@@ -85,17 +95,37 @@ function scrapeImages(html) {
 }
 
 // takes a paginate object and scrapes until instance is false
+
 function scrapeEach(paginate) {
-  // while paginate has next scrapeEach
-  nightmare.wait(3000).evaluate(() => {
-    return document.body.innerHTML
-  }).then(result => {
-    scrapeImages(result);
-    paginate.state();
-    return nightmare.end()
-  }).catch(error => {
-    console.error('Search failed:', error);
-  });
+
+  // condition
+  let hasNext = () => paginate.next
+
+  // action to execute in while loop
+  let nightmareScrape = next => {
+    nightmare.goto(paginate.url).wait(4000).evaluate(() => {
+      return document.body.innerHTML
+    }).then(result => {
+      scrapeImages(result);
+      paginate.update();
+      paginate.state();
+      next();
+    }).catch(error => {
+      console.error('Search failed:', error);
+    });
+  }
+
+  // debugging info
+  let err = err => {
+    if (err)
+      throw err;
+    console.log("finished!");
+  }
+
+  // while paginate hasNext execute nigthmareScrape
+  async.whilst(hasNext, nightmareScrape, err);
+
+  return nightmare;
 }
 
 // --------------------------- CLI TESTS ------------------------- //
@@ -112,10 +142,15 @@ process.argv.forEach((val, index, array) => {
 // the onview endpoint
 function onView() {
   nightmare.goto(config.NGA.online)
-  // get pages
-  nightmare.wait(3000).evaluate(() => {
+  nightmare.wait(3000)
+  nightmare.evaluate(() => {
     return [document.location.href, document.querySelector('span.results-span').innerHTML]
-  }).then(([url, pgd]) => scrapeEach(new Paginate(url, pgd)))
+  }).then(([url, pgd]) => {
+    scrapeEach(new Paginate(url, pgd))
+  }).catch(error => {
+    console.error('Search failed:', error);
+  });
+
 }
 
 // shows all available endpoints

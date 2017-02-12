@@ -9,12 +9,14 @@
   "author": "Jonathan/Jesus",
   "license": "ISC",
   "dependencies": {
+    "async": "^2.1.4",
     "express": "^4.14.1",
     "jquery": "^3.1.1",
     "lodash": "^4.17.4",
     "mongoose": "^4.8.1",
     "morgan": "^1.8.0",
     "nightmare": "^2.9.1",
+    "nightmare-real-mouse": "^1.0.0",
     "x-ray": "^2.3.1"
   }
 }
