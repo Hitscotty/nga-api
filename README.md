@@ -3,7 +3,7 @@
 To get started with developing this repo first
 
 ```bash
-git https://github.com/Hitscotty/nga-api.git && cd nga-api
+git clone https://github.com/Hitscotty/nga-api.git && cd nga-api
 npm install
 ```
 
